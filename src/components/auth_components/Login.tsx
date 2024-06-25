@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import googleIcon from '../../assets/images/google-icon.svg'
 import {EyeOpenIcon, EyeClosedIcon} from '@radix-ui/react-icons'
 import './auth.css'
+import { Link } from "react-router-dom";
 
 interface FormikValues {
   email: string;
@@ -86,7 +87,10 @@ const Login: React.FC = () => {
       </form>
       <span className="block w-full text-center text-sm font-roboto font-medium my-5">or</span>
       <Button  className="w-full flex items-center gap-2"><img src={googleIcon} alt="icon" className="h-5 w-5"/><p>Login with Google</p></Button>
-    </div>
+      <Link to='/auth/reset'>
+      <p className="text-sky-500 font-roboto text-sm font-medium mt-5 text-center">Reset Password</p>
+      </Link>
+      </div>
   );
 };
 
