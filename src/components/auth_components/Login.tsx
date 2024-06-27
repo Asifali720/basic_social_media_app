@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import * as React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Button } from "../ui/button";
@@ -6,6 +6,7 @@ import googleIcon from '../../assets/images/google-icon.svg'
 import {EyeOpenIcon, EyeClosedIcon} from '@radix-ui/react-icons'
 import './auth.css'
 import { Link } from "react-router-dom";
+import { AuthContext, AuthContextType } from "../app_context/AppContext";
 
 interface FormikValues {
   email: string;
@@ -28,7 +29,9 @@ const validationSchema: Yup.Schema<FormikValues> = Yup.object().shape({
 });
 
 const Login: React.FC = () => {
-  const [seePassword, setSeePassword] = useState(false)
+  const [seePassword, setSeePassword] = React.useState(false)
+
+  const {signInWithGoogle, loginWithEmailPassword} = React.useContext(AuthContext) as AuthContextType
 
   const formik = useFormik<FormikValues>({
     initialValues,
@@ -36,6 +39,7 @@ const Login: React.FC = () => {
     onSubmit: (values) => {
       // Handle form submission
       console.log(values);
+      loginWithEmailPassword(values.email, values.password)
     },
   });  
 
@@ -86,7 +90,7 @@ const Login: React.FC = () => {
         <Button type="submit" className="w-full">Login</Button>
       </form>
       <span className="block w-full text-center text-sm font-roboto font-medium my-5">or</span>
-      <Button  className="w-full flex items-center gap-2"><img src={googleIcon} alt="icon" className="h-5 w-5"/><p>Login with Google</p></Button>
+      <Button  className="w-full flex items-center gap-2" onClick={signInWithGoogle}><img src={googleIcon} alt="icon" className="h-5 w-5"/><p>Login with Google</p></Button>
       <Link to='/auth/reset'>
       <p className="text-sky-500 font-roboto text-sm font-medium mt-5 text-center">Reset Password</p>
       </Link>

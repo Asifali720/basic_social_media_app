@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
 import "./auth.css";
 import { Button } from "../ui/button";
-import googleIcon from "../../assets/images/google-icon.svg";
 import { useToast } from "../ui/use-toast";
 import { BounceLoader } from "react-spinners";
+import { AuthContext, AuthContextType } from "../app_context/AppContext";
 
 interface FormikValues {
   username: string;
@@ -45,6 +45,8 @@ const Register: React.FC = () => {
   const [seeConfirmPassword, setSeeConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const {registerUserWithEmailAndPassword} = useContext(AuthContext) as AuthContextType
+
   const formik = useFormik<FormikValues>({
     initialValues,
     validationSchema,
@@ -56,6 +58,8 @@ const Register: React.FC = () => {
           description: "Your form has been submitted successfully.",
         });
         setLoading(true);
+        registerUserWithEmailAndPassword(values.email, values.password, values.username)
+        setLoading(false);
       }
       console.log(values);
     },
@@ -182,13 +186,6 @@ const Register: React.FC = () => {
               Register
             </Button>
           </form>
-          <span className="block w-full text-center text-sm font-roboto font-medium my-5">
-            or
-          </span>
-          <Button className="w-full flex items-center gap-2">
-            <img src={googleIcon} alt="icon" className="h-5 w-5" />
-            <p>Register with Google</p>
-          </Button>
         </>
       )}
     </div>

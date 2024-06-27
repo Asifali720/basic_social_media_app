@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import {useToast} from '../ui/use-toast'
 import clsx from 'clsx'
+import { AuthContext, AuthContextType } from '../app_context/AppContext'
 
 const ResetComponent = () => {
   const {toast} = useToast()
   const [email, setEmail] = useState("")
   const [error, setError] = useState(false)
+
+  const {resetPassword} = useContext(AuthContext) as AuthContextType
 
   const handleResetEmail = () => {
     if(!email){
@@ -28,12 +31,14 @@ const ResetComponent = () => {
       })
       setError(true)
     }else{
+      resetPassword(email)
        toast({
         title: "Email sent successfully",
         description: "We have sent an email to your email address.",
       })
       setError(false)
     }
+      console.log("🚀 ~ handleResetEmail ~ email:", email)
  
   }
 
