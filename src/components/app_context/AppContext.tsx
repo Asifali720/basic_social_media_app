@@ -24,6 +24,9 @@ export interface AuthContextType {
   signOutUser: () => Promise<void>;
   user: any;
   userData: any;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  isExistEmail: boolean
 }
 // interface initialeStateType {
 //   signInWithGoogle: () => void
@@ -38,6 +41,8 @@ const AppContext = ({ children }: { children: React.ReactNode }) => {
   const collectionRef = collection(db, "users");
   const [user, setUser] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [isExistEmail, setIsExistEmail] = useState(false);
 
   const navigate = useNavigate();
 
@@ -76,8 +81,10 @@ const AppContext = ({ children }: { children: React.ReactNode }) => {
         providerId: "email/password",
         email: email,
       });
+      setIsExistEmail(false)
     } catch (err: any | string) {
       console.log(err.message);
+      setIsExistEmail(true)
     }
   };
 
@@ -109,7 +116,7 @@ const AppContext = ({ children }: { children: React.ReactNode }) => {
         } else {
           setUser(null)
           setUserData(null)
-          navigate("/")
+          navigate("/auth")
         }
     })
   }
@@ -134,7 +141,7 @@ useEffect(()=>{
 
   return (
     <AuthContext.Provider
-      value={{signInWithGoogle, registerUserWithEmailAndPassword, loginWithEmailPassword, resetPassword, signOutUser, user, userData}}
+      value={{signInWithGoogle, registerUserWithEmailAndPassword, loginWithEmailPassword, resetPassword, signOutUser, user, userData, loading, setLoading, isExistEmail}}
     >
       {children}, 
     </AuthContext.Provider>

@@ -4,6 +4,7 @@ import { Button } from '../ui/button'
 import {useToast} from '../ui/use-toast'
 import clsx from 'clsx'
 import { AuthContext, AuthContextType } from '../app_context/AppContext'
+import {BounceLoader} from 'react-spinners'
 
 const ResetComponent = () => {
   const {toast} = useToast()
@@ -38,8 +39,6 @@ const ResetComponent = () => {
       })
       setError(false)
     }
-      console.log("🚀 ~ handleResetEmail ~ email:", email)
- 
   }
 
   return (

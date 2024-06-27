@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { House, Mail, Atom, Trophy, CircleUserRound, Bolt, Bell } from 'lucide-react';
 import {
@@ -7,9 +7,22 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from "../ui/tooltip"
+import { AuthContext, AuthContextType } from '../app_context/AppContext';
+import { useNavigate } from 'react-router-dom';
 
 
 const Navbar = () => {
+   
+  const {signOutUser, user} = useContext(AuthContext) as AuthContextType;
+  console.log("🚀 ~ Navbar ~ userData:", user)
+
+  const navigate = useNavigate();
+
+  const handleSignOut =() => {
+    signOutUser();
+    navigate("/auth")
+  }
+
   return (
     <div className='flex items-center justify-between px-2 md:px-10 lg:px-20 xl:px-40 w-full py-3 border-b border-b-gray-200 shadow-xl fixed top-0 z-40 bg-white'>
       <div>
@@ -43,7 +56,7 @@ const Navbar = () => {
           <li className='hover:text-sky-500 hover:translate-y-1 transition-all ease-in-out duration-300 cursor-pointer'>
             <Bell />
           </li>
-          <li>
+          <li onClick={handleSignOut}>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger className='flex items-center gap-2'>
@@ -54,7 +67,7 @@ const Navbar = () => {
                   <p className='text-base font-roboto font-medium'>User</p>
                 </TooltipTrigger>
                 <TooltipContent className='bg-gray-600'>
-                  <p className='text-white font-roboto'>profile</p>
+                  <p className='text-white font-roboto font-bold'>Sign out</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

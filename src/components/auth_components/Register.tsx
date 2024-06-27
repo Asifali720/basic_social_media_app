@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 import { BounceLoader } from "react-spinners";
 import { AuthContext, AuthContextType } from "../app_context/AppContext";
+import { auth } from "../../firebase/config";
 
 interface FormikValues {
   username: string;
@@ -43,25 +44,29 @@ const Register: React.FC = () => {
   const { toast } = useToast();
   const [seePassword, setSeePassword] = useState(false);
   const [seeConfirmPassword, setSeeConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  const {registerUserWithEmailAndPassword} = useContext(AuthContext) as AuthContextType
+  const {registerUserWithEmailAndPassword, setLoading, loading, isExistEmail} = useContext(AuthContext) as AuthContextType;
 
   const formik = useFormik<FormikValues>({
     initialValues,
     validationSchema,
     onSubmit: (values) => {
       // Handle form submission
-      if (formik.isValid) {
+      if (formik.isValid && !isExistEmail) {
         toast({
           title: "Form submitted successfully",
-          description: "Your form has been submitted successfully.",
+          description: "Your form has been submitted successfully go to login tab.",
         });
         setLoading(true);
         registerUserWithEmailAndPassword(values.email, values.password, values.username)
         setLoading(false);
+
+      } else if (isExistEmail) {
+         toast({
+           title: "Error",
+           description: "Email already exist.",
+         })
       }
-      console.log(values);
     },
   });
 
@@ -79,7 +84,7 @@ const Register: React.FC = () => {
           <form onSubmit={formik.handleSubmit}>
             <div className="flex flex-col items-start mb-2">
               <label
-                htmlFor="name"
+                htmlFor="username"
                 className="text-gray-600 font-roboto text-sm font-medium mb-1"
               >
                 Username
@@ -87,7 +92,7 @@ const Register: React.FC = () => {
               <input
                 id="username"
                 name="username"
-                type="username"
+                type="text"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.username}
@@ -140,6 +145,7 @@ const Register: React.FC = () => {
                 />
                 <button
                   className="mr-2"
+                  type="button"
                   onClick={() => setSeePassword(!seePassword)}
                 >
                   {seePassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
@@ -168,7 +174,7 @@ const Register: React.FC = () => {
                   value={formik.values.confirmPassword}
                   className="w-full p-2 focus:outline-none"
                 />
-                <button
+                <button type="button"
                   className="mr-2"
                   onClick={() => setSeeConfirmPassword(!seeConfirmPassword)}
                 >
