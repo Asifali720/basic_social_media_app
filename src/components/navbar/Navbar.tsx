@@ -9,13 +9,12 @@ import {
 } from "../ui/tooltip"
 import { AuthContext, AuthContextType } from '../app_context/AppContext';
 import { useNavigate } from 'react-router-dom';
-
+import placeholderImage from '../../assets/user_place.jpg'
 
 const Navbar = () => {
    
   const {signOutUser, user} = useContext(AuthContext) as AuthContextType;
-  console.log("🚀 ~ Navbar ~ userData:", user)
-
+  
   const navigate = useNavigate();
 
   const handleSignOut =() => {
@@ -61,10 +60,11 @@ const Navbar = () => {
               <Tooltip>
                 <TooltipTrigger className='flex items-center gap-2'>
                   <Avatar className='!rounded-md'>
-                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarImage src={user?.photoURL ? user?.photoURL : placeholderImage} />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
-                  <p className='text-base font-roboto font-medium'>User</p>
+                  <p className='text-base font-roboto font-medium'>{user?.displayName ?  user?.displayName.charAt(0).toUpperCase() + user?.displayName.slice(1) : 
+                    'Ananymous'}</p>
                 </TooltipTrigger>
                 <TooltipContent className='bg-gray-600'>
                   <p className='text-white font-roboto font-bold'>Sign out</p>

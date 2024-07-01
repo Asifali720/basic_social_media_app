@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import natureImage from "../../assets/images/nature.jpg";
 import {
   Tooltip,
@@ -15,6 +15,8 @@ import laptop from "../../assets/images/laptop.jpg";
 import media from "../../assets/images/media.jpg";
 import apps from "../../assets/images/apps.jpg";
 import tik from "../../assets/images/tik.jpg";
+import { AuthContext, AuthContextType } from "../app_context/AppContext";
+import placeholderImage from "../../assets/user_place.jpg"
 
 
 
@@ -26,6 +28,9 @@ interface ImagesListArray {
 const SidebarLeft = () => {
   const [data, setData] = useState<ImagesListArray | null>(null);;
   const count = useRef(0);
+
+  const {user} = useContext(AuthContext) as AuthContextType;
+  console.log("🚀 ~ SidebarLeft ~ user:", user)
 
   const handleRandom = (arr: ImagesListArray[]) => {
     const randomIndex = Math.floor(Math.random() * arr.length);
@@ -97,11 +102,11 @@ const SidebarLeft = () => {
           <Tooltip>
             <TooltipTrigger className="flex flex-col items-center">
               <Avatar className="rounded-md w-16 h-16">
-                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarImage src={user?.photoURL ? user?.photoURL : placeholderImage} />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <p className="text-base font-roboto font-medium text-center">
-                User email
+                { user?.email && user?.email}
               </p>
             </TooltipTrigger>
             <TooltipContent className="bg-gray-600">
