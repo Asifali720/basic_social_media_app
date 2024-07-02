@@ -56,4 +56,4 @@ const ResetComponent = () => {
   )
 }
 
-export default ResetComponent
+export default ResetComponent;

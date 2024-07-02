@@ -10,6 +10,13 @@ import { db } from '../../../firebase/config'
 import { collection, doc, getDocs, onSnapshot, orderBy, query, serverTimestamp, setDoc } from 'firebase/firestore'
 import { postActions, postStates, PostReducer } from '../../app_context/PostReducer'
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, UploadMetadata } from "firebase/storage";
+import { useToast } from '../../ui/use-toast'
+import PostCard from '../cards/PostCard'
+
+
+// import emojiAddPickerBtn from '../../../assets/images/emoji-add.svg'
+// import { Picker } from "emoji-mart";
+// import "emoji-mart/css/emoji-mart.css";
 
 const CreateNewPostSection = () => {
  const uploadRef = useRef<HTMLInputElement | null>(null);
@@ -21,6 +28,11 @@ const CreateNewPostSection = () => {
  const [progressBar, setProgressBar] = useState(0)
  const {SUBMIT_POST, HANDLE_ERROR} = postActions
  const scrollRef = useRef<HTMLDivElement | null>(null);
+//  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+
+
+//  const [inputText, setInputText] = useState('');
+//  const textInputRef = useRef<HTMLInputElement | null>(null);
  const handleUpload=()=>{
     const uploadElement = uploadRef.current;
 
@@ -37,6 +49,7 @@ const CreateNewPostSection = () => {
 
 
  const storage = getStorage();
+ const {toast} = useToast()
 
  const metadata = {
   contentType: ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/svg+xml']
@@ -52,9 +65,9 @@ const document = posts.id
           await setDoc(posts, {
             document: document,
             uid: user?.uid || userData?.uid,
-            email: user?.email || userData?.email,
-            logo: user?.photoURL || userData?.photoUrl,
-            name: user?.displayName || userData?.displayName,
+            email: user?.email, 
+            logo: user?.photoURL,
+            name: user?.displayName || userData?.name,
             text: text.current?.value,
             image: image,
             timeStamp: serverTimestamp(),
@@ -62,7 +75,12 @@ const document = posts.id
           if (text.current) {
               text.current.value = '';
           }
-          setImage('')
+          toast({
+            title: 'Post created successfully',
+            description: "We've created your post for you."
+          })
+          // window.location.reload()
+          // setImage('')
         }catch(err: any | string){
             dispatch({type: HANDLE_ERROR, payload: true})
             console.log(err.message)
@@ -129,8 +147,30 @@ const document = posts.id
     fetchDataAndSetState()
  }, [SUBMIT_POST])
 
+ useEffect(()=>{
+    if (progressBar === 100) {
+      setTimeout(() => {
+        setProgressBar(0)
+      }, 3000);
+    }
+
+    if(state.error){
+       toast({
+         title: "Error",
+         description: "Something went wrong",
+       })
+    }
+ }, [progressBar, state.error, toast])
+
+//  const handleEmojiSelect = (emoji:{ native: string } ) => {
+//   const cursorPos = textInputRef.current?.selectionStart;
+//   const text = inputText.slice(0, cursorPos ?? 0) + emoji.native + inputText.slice(cursorPos ?? 0);
+//   setInputText(text);
+// };
+
 
   return (
+    <React.Fragment>
     <div className='border border-gray-200 shadow-xl rounded-xl w-full'>
         <form onSubmit={handleSubmitPost}>
         <div className='flex items-center justify-between p-2 border-b border-b-gray-300 w-full'>
@@ -139,7 +179,15 @@ const document = posts.id
                     <AvatarImage src={user?.photoURL ? user?.photoURL : placeholderImage} />
                     <AvatarFallback>{user?.displayName ? user?.displayName.charAt(0).toUpperCase() : userData?.displayName.charAt(0)}</AvatarFallback>
                   </Avatar>
-             <input type="text" name="" id="" ref={text} className='p-2 w-full font-roboto outline-none' placeholder={`whats on your mind user ${user?.displayName && user?.displayName.charAt(0).toUpperCase() + user?.displayName.split(' ')[0].slice(1) || userData?.displayName.charAt(0) + userData?.displayName.slice(1)}`}/>     
+             <input type="text" name="" id="" ref={text} className='p-2 w-full max-w-[200px] font-roboto outline-none' placeholder={`whats on your mind ${user?.displayName && user?.displayName.charAt(0).toUpperCase() + user?.displayName.split(' ')[0].slice(1) || userData?.displayName.charAt(0) + userData?.displayName.slice(1)}`}/>
+            {/* <button type='button' onClick={()=>setShowEmojiPicker(!showEmojiPicker)}>
+              <img src={emojiAddPickerBtn} alt='emoji' className='w-8 h-8 opacity-50'/>
+            </button> */}
+            {/* {showEmojiPicker && (
+          <div className='absolute z-10 top-full mt-2'>
+            <Picker onSelect={handleEmojiSelect} />
+          </div>
+        )} */}
           </div>
           {
             image && <img src={image} alt="preview" className='h-20'/>
@@ -149,7 +197,7 @@ const document = posts.id
       <div className='bg-sky-500 py-1' style={{width: `${progressBar}%`}}></div>
        <div className='p-2 flex items-center justify-around'>
         <div className='flex items-center gap-2'>
-        <div onClick={handleUpload} className=''>
+        <div onClick={handleUpload} className='cursor-pointer'>
             <img src={uploadIcon} alt='upload' className='w-10 h-10'/>
             <input ref={uploadRef} type="file" name='' onChange={handleFileUpload} id='addImage' className='hidden'/>
         </div>
@@ -166,10 +214,17 @@ const document = posts.id
             <p className='text-base font-roboto'>Feeling</p>
         </div>
        </div>
-
         </form>
-      <div ref={scrollRef}></div>
     </div>
+         {
+          state.posts.length > 0 && state.posts.map((post: any)=> 
+            {
+              return <PostCard key={post.id} {...post}/>
+            }
+        )
+        }
+      <div ref={scrollRef}></div>
+     </React.Fragment>
   )
 }
 

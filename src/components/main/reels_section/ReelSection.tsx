@@ -1,6 +1,6 @@
 import React from 'react'
 import data from '../../../assets/cardData'
-import CardReels from '../card/CardReels'
+import CardReels from '../cards/CardReels'
 
 const ReelSection = () => {
   return (

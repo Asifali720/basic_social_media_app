@@ -1,5 +1,3 @@
-import { error } from "console"
-
 export const postActions ={
     HANDLE_ERROR: "HANDLE_ERROR",
     SUBMIT_POST: "SUBMIT_POST",
