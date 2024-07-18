@@ -42,12 +42,13 @@ const CreateNewPostSection = () => {
   const uploadRef = useRef<HTMLInputElement | null>(null);
   const { user, userData } = useContext(AuthContext) as AuthContextType;
   const text = useRef<HTMLInputElement | null>(null);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [state, dispatch] = useReducer(PostReducer, postStates);
   const [progressBar, setProgressBar] = useState(0);
   const { SUBMIT_POST, HANDLE_ERROR } = postActions;
   const scrollRef = useRef<HTMLDivElement | null>(null);
+
   //  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
   //  const [inputText, setInputText] = useState('');
@@ -155,29 +156,24 @@ const CreateNewPostSection = () => {
     }
   };
 
-  const fetchData = async () => {
-    const q = query(collectionRef, orderBy("timeStamp", "asc"));
-    const querySnapshot = await getDocs(q);
-    const postData = querySnapshot?.docs.map((doc) => doc.data());
-    return postData;
-  };
 
   useEffect(() => {
-    const fetchDataAndSetState = async () => {
-      try {
-        const postData = await fetchData();
-        dispatch({ type: SUBMIT_POST, posts: postData });
-        scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-        setImage("");
-        setFile(null);
-        setProgressBar(0);
-      } catch (err: any | string) {
-        dispatch({ type: HANDLE_ERROR });
-        console.log(err.message);
-        alert(err.message);
+    const getAllPost = async () => {
+      try{
+        const q = query(collectionRef, orderBy("timeStamp", "asc"))
+        await onSnapshot(q, (doc) => {
+          dispatch({type: SUBMIT_POST, posts: doc?.docs?.map((item)=> item?.data())})
+        })
+        scrollRef.current?.scrollIntoView({ behavior: "smooth" })
+        setImage(null)
+        setFile(null)
+        setProgressBar(0)
+      }catch(err: string | any){
+        console.log(err.message)
+        dispatch({type: HANDLE_ERROR})
       }
-    };
-    fetchDataAndSetState();
+    }
+    getAllPost()
   }, [SUBMIT_POST]);
 
   useEffect(() => {

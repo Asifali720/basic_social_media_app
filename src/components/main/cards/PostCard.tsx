@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import likeBtn from "../../../assets/images/like.png";
 import commentBtn from "../../../assets/images/comment.png";
@@ -23,6 +23,8 @@ import {
   where,
 } from "firebase/firestore";
 import addFriendLogo from '../../../assets/images/add-friend.png'
+import CommentSection from "../comment_section/CommentSection";
+import {useToast} from '../../ui/use-toast'
 
 const PostCard = ({
   uid,
@@ -43,14 +45,14 @@ const PostCard = ({
   image: string;
   id: string;
 }) => {
-  console.log("🚀 ~ id:", id)
-  const { user } = useContext(AuthContext) as AuthContextType;
+  const [openComment, setOpenComment] = useState(false);
+  const { user, setLoading } = useContext(AuthContext) as AuthContextType;
   const [state, dispatch] = useReducer(PostReducer, postStates);
   const { HANDLE_ERROR, ADD_LIKES } = postActions;
 
   const likesRef = doc(collection(db, "posts", id, "likes"));
   const likesCollection = collection(db, "posts", id, "likes");
-
+  const {toast} = useToast()
   const addUser = async () => {
     try {
       const q = query(collection(db, "users"), where("uid", "==", user.uid));
@@ -89,31 +91,26 @@ const PostCard = ({
     }
   };
 
-  // const handleLikes = async (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   const q = query(likesCollection, where("id", "==", user.uid));
-  //   const querySnapShot = await getDocs(q);
-  
-  //   let likesdocId;
-  //   if (!querySnapShot.empty) {
-  //     likesdocId = querySnapShot.docs[0].id;
-  //   }
-  
-  //   try {
-  //     if (likesdocId !== undefined) {
-  //       const deleteId = doc(db, "posts", id, "likes", likesdocId);
-  //       await deleteDoc(deleteId);
-  //     } else {
-  //       await setDoc(likesRef, {
-  //         id: user.uid,
-  //       });
-  //       // addUser()
-  //     }
-  //   } catch (err: any | string) {
-  //     dispatch({ type: HANDLE_ERROR });
-  //     console.log(err.message);
-  //   }
-  // };
+  const deletePost = async(e: React.MouseEvent<HTMLButtonElement>)=>{
+    e.preventDefault();
+    try {
+      if(user.uid === uid){
+        await deleteDoc(doc(db, "posts", id));
+        setLoading(true);
+        toast({
+          title: 'Post Deleted',
+          description: 'Your post has been deleted',
+        })
+      }else{
+        alert('You can only delete your posts')
+      }
+      // dispatch({ type: HANDLE_ERROR });   
+    } catch (err: any | string) {
+      dispatch({ type: HANDLE_ERROR });
+      console.log(err.message);
+      
+    }
+  }
   
 
 
@@ -181,13 +178,16 @@ const PostCard = ({
           <img src={likeBtn} alt="" />
           <p>{state.likes.length > 0 && state.likes.length}</p> 
         </button>
-        <button className="transition-all ease-in-out duration-300 hover:scale-110">
+        <button className="transition-all ease-in-out duration-300 hover:scale-110" onClick={() => setOpenComment(!openComment)}>
           <img src={commentBtn} alt="" />
         </button>
-        <button className="transition-all ease-in-out duration-300 hover:scale-110">
+        <button className="transition-all ease-in-out duration-300 hover:scale-110" onClick={(e)=>deletePost(e)}>
           <img src={deleteBtn} alt="" />
         </button>
       </div>
+      {
+        openComment && <CommentSection commentId={id} />
+}
     </div>
   );
 };

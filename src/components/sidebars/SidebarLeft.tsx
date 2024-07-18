@@ -30,7 +30,6 @@ const SidebarLeft = () => {
   const count = useRef(0);
 
   const {user} = useContext(AuthContext) as AuthContextType;
-  console.log("🚀 ~ SidebarLeft ~ user:", user)
 
   const handleRandom = (arr: ImagesListArray[]) => {
     const randomIndex = Math.floor(Math.random() * arr.length);

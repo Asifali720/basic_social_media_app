@@ -8,7 +8,7 @@ import {
   TooltipTrigger
 } from "../ui/tooltip"
 import { AuthContext, AuthContextType } from '../app_context/AppContext';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import placeholderImage from '../../assets/user_place.jpg'
 
 const Navbar = () => {
@@ -27,12 +27,14 @@ const Navbar = () => {
       <div>
         <h3 className='font-roboto font-bold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-red-600'>Social media <span className='text-black'>App</span></h3>
       </div>
-
       <div>
         <ul className='flex items-center gap-4'>
+          <Link to='/'>
           <li className='hover:text-sky-500 hover:translate-y-1 transition-all ease-in-out duration-300 cursor-pointer'>
             <House />
           </li>
+          </Link>
+          
           <li className='hover:text-sky-500 hover:translate-y-1 transition-all ease-in-out duration-300 cursor-pointer'>
             <Mail />
           </li>

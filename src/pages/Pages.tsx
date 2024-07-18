@@ -4,6 +4,7 @@ import {Routes, Route} from 'react-router-dom'
 import Auth from './Auth'
 import ResetComponent from '../components/auth_components/ResetComponent'
 import PageNotFound from './PageNotFound'
+import FriendProfile from './FriendProfile'
 
 
 const Pages = () => {
@@ -14,6 +15,7 @@ const Pages = () => {
       <Route path='/auth' element={<Auth/>}/>
       <Route path='/auth/reset' element={<ResetComponent/>}/>
       <Route path='*' element={<PageNotFound/>}/>
+      <Route path='/profile/:id' element={<FriendProfile/>}/>
     </Routes>
     </>
   )

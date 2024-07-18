@@ -2,12 +2,14 @@ export const postActions ={
     HANDLE_ERROR: "HANDLE_ERROR",
     SUBMIT_POST: "SUBMIT_POST",
     ADD_LIKES: "ADD_LIKES",
+    ADD_COMMENT: "ADD_COMMENT"
 } 
 
 export const postStates = {
     error: false,
     posts: [],
-    likes: []
+    likes: [],
+    comments: []
 }
 
 export const PostReducer = (state: any, action: any) => {
@@ -29,7 +31,13 @@ export const PostReducer = (state: any, action: any) => {
                 ...state,
                 error: false,
                 likes: action.likes
-            }    
+            }
+        case postActions.ADD_COMMENT:
+            return {
+                ...state,
+                error: false,
+                comments: action.comments
+            }          
         default:
             return state
     }
