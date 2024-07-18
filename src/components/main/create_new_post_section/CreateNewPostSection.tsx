@@ -284,7 +284,7 @@ const CreateNewPostSection = () => {
         </form>
       </div>
       {state.posts.length > 0 &&
-        state.posts.map((post: any, index: number) => {
+        state?.posts?.map((post: any, index: number) => {
           return <PostCard key={index}
           logo={post?.logo}
           id={post?.document}

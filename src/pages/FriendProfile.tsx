@@ -18,8 +18,8 @@ const FriendProfile = () => {
   // console.log("🚀 ~ FriendProfile ~ postData:", postData)
   // console.log("🚀 ~ FriendProfile ~ profile:", profile)
   const {id} = useParams()  
-  const [state, dispatch] = useReducer(PostReducer, postStates);
-  console.log("🚀 ~ FriendProfile ~ state:", state.posts)
+  // const [state, dispatch] = useReducer(PostReducer, postStates);
+  // console.log("🚀 ~ FriendProfile ~ state:", state.posts)
   
   
 
@@ -27,22 +27,22 @@ const FriendProfile = () => {
     const getUserProfile = async()=>{
         const q = query(collection(db, "users"), where("uid", "==", id));
         await onSnapshot(q, (doc) => {
-            setProfile(doc.docs[0].data())
+            setProfile(doc?.docs[0]?.data())
         })
     }
     getUserProfile()
   }, [id, setProfile])
 
-  useEffect(() => {
-      const getUserPosts = async()=>{
-          const q = query(collection(db, "posts"), where("uid", "==", id));
-          await onSnapshot(q, (doc) => {
-              setPostData(doc.docs[0].data())
-          })
-      }
+  // useEffect(() => {
+  //     const getUserPosts = async()=>{
+  //         const q = query(collection(db, "posts"), where("uid", "==", id));
+  //         await onSnapshot(q, (doc) => {
+  //             setPostData(doc?.docs[0]?.data())
+  //         })
+  //     }
 
-     getUserPosts() 
-  },[id, setPostData])
+  //    getUserPosts() 
+  // },[id, setPostData])
 
   
   return (
