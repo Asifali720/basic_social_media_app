@@ -120,7 +120,7 @@ const AppContext = ({ children }: { children: React.ReactNode }) => {
         }
     })
   }
-
+/* eslint-disable react-hooks/exhaustive-deps */
 useEffect(()=>{
     userStatechanged()
     if(user || userData){
@@ -129,6 +129,7 @@ useEffect(()=>{
       navigate("/auth")
     }
   },[])
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   const loginWithEmailPassword = async(email: string, password: string)=>{
     try{
