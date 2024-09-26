@@ -16,7 +16,7 @@ interface FormikValues {
   confirmPassword: string;
 }
 
-let initialValues: FormikValues = {
+const initialValues: FormikValues = {
   username: "",
   email: "",
   password: "",

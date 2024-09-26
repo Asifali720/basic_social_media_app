@@ -19,7 +19,7 @@ interface FormikValues {
   password: string;
 }
 
-let initialValues: FormikValues = {
+const initialValues: FormikValues = {
   email: "",
   password: "",
 };

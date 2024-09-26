@@ -57,7 +57,7 @@ const SidebarLeft = () => {
     ];
     handleRandom(imagesList)
     let countAds = 0
-    let startAds = setInterval(()=>{
+    const startAds = setInterval(()=>{
         countAds++;
         handleRandom(imagesList);
         count.current = countAds;

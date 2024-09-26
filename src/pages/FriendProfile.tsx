@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react'
+import { useEffect,  useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Layout from '../components/layout/Layout'
 import Navbar from '../components/navbar/Navbar'
@@ -6,7 +6,6 @@ import SidebarLeft from '../components/sidebars/SidebarLeft'
 import SidebarRight from '../components/sidebars/SidebarRight'
 import { collection, onSnapshot, query, where } from 'firebase/firestore'
 import { db } from '../firebase/config'
-import { PostReducer, postStates } from '../components/app_context/PostReducer'
 import bannerPic from '../assets/images/profilePic.jpg'
 import placeholderImage from '../assets/user_place.jpg'
 import CreateNewPostSection from '../components/main/create_new_post_section/CreateNewPostSection'
@@ -14,12 +13,9 @@ import CreateNewPostSection from '../components/main/create_new_post_section/Cre
 
 const FriendProfile = () => {
   const [profile , setProfile] = useState<any>(null)
-  const [postData , setPostData] = useState<any>(null)
-  // console.log("🚀 ~ FriendProfile ~ postData:", postData)
-  // console.log("🚀 ~ FriendProfile ~ profile:", profile)
   const {id} = useParams()  
-  const [state, dispatch] = useReducer(PostReducer, postStates);
-  console.log("🚀 ~ FriendProfile ~ state:", state.posts)
+  // const [state, dispatch] = useReducer(PostReducer, postStates);
+  // console.log("🚀 ~ FriendProfile ~ state:", state.posts)
   
   
 
@@ -27,22 +23,22 @@ const FriendProfile = () => {
     const getUserProfile = async()=>{
         const q = query(collection(db, "users"), where("uid", "==", id));
         await onSnapshot(q, (doc) => {
-            setProfile(doc.docs[0].data())
+            setProfile(doc?.docs[0]?.data())
         })
     }
     getUserProfile()
   }, [id, setProfile])
 
-  useEffect(() => {
-      const getUserPosts = async()=>{
-          const q = query(collection(db, "posts"), where("uid", "==", id));
-          await onSnapshot(q, (doc) => {
-              setPostData(doc.docs[0].data())
-          })
-      }
+  // useEffect(() => {
+  //     const getUserPosts = async()=>{
+  //         const q = query(collection(db, "posts"), where("uid", "==", id));
+  //         await onSnapshot(q, (doc) => {
+  //             setPostData(doc?.docs[0]?.data())
+  //         })
+  //     }
 
-     getUserPosts() 
-  },[id, setPostData])
+  //    getUserPosts() 
+  // },[id, setPostData])
 
   
   return (
